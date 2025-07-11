@@ -1,17 +1,15 @@
 # main.py
 from fastapi import FastAPI, HTTPException, Depends, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field
-from typing import List, Optional, Dict, Any
-from datetime import datetime, timedelta
-from contextlib import contextmanager
-from enum import Enum
 from app.router import hr_router
+from app.middleware import RateLimitMiddleware
+
 # Initialize FastAPI app
 app = FastAPI(
     title="HR Employee Search API",
     description="Employee search directory API for HR companies",
-    version="1.0.0"
+    version="1.0.0",
+    docs_url='/docs'
 )
 
 # Add CORS middleware
@@ -23,6 +21,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.add_middleware(RateLimitMiddleware)
 app.include_router(hr_router)
 
 

@@ -4,11 +4,13 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 import os
 from typing import Generator
+from dotenv import load_dotenv
+load_dotenv()  
 
 # Database configuration
 DATABASE_URL = os.getenv(
     "DATABASE_URL", 
-    "postgresql://username:password@localhost/hr_employee_db"
+    "postgresql://postgres:1234@localhost/HR_DB"
 )
 
 # For development, you might want to use SQLite
