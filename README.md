@@ -6,97 +6,140 @@ A high-performance, filterable employee directory API for HR organizations, buil
 
 ## 🚀 Features
 
-- 🔎 Search employees with filters (name, department, position, etc.)
-- 🧩 Organization-specific column visibility
+- 🔍 Employee search with flexible filters
+- 🏢 Organization-specific visible columns
 - 📄 Pagination support
-- 🛡️ Rate limiting middleware
-- 🧬 Alembic migrations
-- 🌱 Seeder support for test/demo data
-- 🐳 Docker & Docker Compose ready
+- 🔐 Rate limiting middleware
+- ⚙️ Alembic-based migrations
+- 🌱 Seeder for development/test data
+- 🐳 Docker & Docker Compose support
 
 ---
 
 ## 📁 Project Structure
 
+```
+hr_system/
+├── app/
+│   ├── __init__.py
+│   ├── main.py
+│   ├── db.py
+│   ├── config.py
+│   ├── models.py
+│   ├── routers/
+│   ├── crud/
+│   └── seed.py
+├── alembic/
+├── alembic.ini
+├── Dockerfile
+├── docker-compose.yml
+├── requirements.txt
+├── start.sh
+├── .env
+└── README.md
+```
 
 ---
 
-## ⚙️ Environment Variables
+## ⚙️ Environment Configuration
 
-Create a `.env` file in the project root:
+Create a `.env` file:
 
 ```env
 DATABASE_URL=postgresql+psycopg2://postgres:postgres@db:5432/hr_db
+```
 
+---
 
+## 💻 Running Locally (No Docker)
 
-🛠️ Local Development (without Docker)
-1. Install dependencies
+```bash
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 
-
-2. Create DB & run migrations
-Make sure PostgreSQL is running locally:
 alembic upgrade head
+python app/seed.py
 
+uvicorn app.main:app --reload
+```
 
-3. Seed sample data
-python app/seed_data.py
+---
 
+## 🐳 Running with Docker
 
-4. Start server
-uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
-
-
-
-🐳 Run with Docker
-1. Build and start services
+```bash
 docker compose up --build
+```
 
-This will:
+- Runs DB, app, migrations, and seeds data
+- Access API at: http://localhost:8000
 
-Start PostgreSQL
-Run Alembic migrations
-Seed sample data
-Launch FastAPI app on http://localhost:8000
+---
 
+## 🔌 API Endpoints
 
+### Health
 
-
-🔌 API Endpoints
-✅ Health Check
+```http
 GET /health
+```
 
+### Employee Search
 
-✅ Search Employees
+```http
 GET /api/employees/search
+```
 
+#### Filters
 
-| Param            | Type   | Description                                   |
-| ---------------- | ------ | --------------------------------------------- |
-| organization\_id | int    | (Required) Organization ID                    |
-| name             | string | (Optional) Partial match on name              |
-| department       | string | (Optional) Exact department                   |
-| position         | string | (Optional) Exact position                     |
-| location         | string | (Optional) Exact location                     |
-| status           | enum   | (Optional) ACTIVE / NOT\_STARTED / TERMINATED |
-| page             | int    | Page number (default: 1)                      |
-| page\_size       | int    | Items per page (default: 10)                  |
+| Query Param    | Type     | Description                                 |
+|----------------|----------|---------------------------------------------|
+| organization_id| int      | Required                                     |
+| name           | string   | Optional, partial match                      |
+| department     | string   | Optional                                     |
+| position       | string   | Optional                                     |
+| location       | string   | Optional                                     |
+| status         | enum     | ACTIVE, NOT_STARTED, TERMINATED             |
+| page           | int      | Default = 1                                  |
+| page_size      | int      | Default = 10                                 |
 
+Example:
 
+```bash
+curl -X GET "http://localhost:8000/api/employees/search?organization_id=1&page=1&page_size=5"
+```
 
+---
 
-⚡ Rate Limiting
-Configured per IP using middleware
+## 🧬 Alembic Migrations
 
-Default: 100 requests per hour
+```bash
+alembic revision --autogenerate -m "add something"
+alembic upgrade head
+```
 
-Modify logic in app/main.py or custom middleware
+---
 
+## 🌱 Seeder
 
+```bash
+python app/seed.py
+```
 
-🧑‍💻 Author
-Vishal Nitavne
-Backend Developer • Python | FastAPI | PostgreSQL
+Runs automatically in Docker via `start.sh`
+
+---
+
+## 🛡️ Rate Limiting
+
+Basic in-memory rate limit included. Can be extended using Redis or other backends.
+
+---
+
+## 🧑‍💻 Author
+
+**Vishal Nitavne**  
+Backend Developer | FastAPI | PostgreSQL | Kafka
+
+---
