@@ -8,7 +8,7 @@ from typing import Generator
 # Database configuration
 DATABASE_URL = os.getenv(
     "DATABASE_URL", 
-    "postgresql://username:password@localhost/hr_employee_db"
+    "postgresql://postgres:1234@localhost/HR_DB"
 )
 
 # For development, you might want to use SQLite

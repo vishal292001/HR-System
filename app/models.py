@@ -1,10 +1,18 @@
+from enum import Enum
 from sqlalchemy import Column, Integer, String, Float, Date, DateTime, ForeignKey, Text, Index
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from datetime import datetime
+from sqlalchemy import Column, Enum as SqlEnum, String
 
 Base = declarative_base()
+
+
+class EmployeeStatus(str, Enum):
+    ACTIVE = "ACTIVE"
+    NOT_STARTED = "NOT_STARTED"
+    TERMINATED = "TERMINATED"
 
 class Organization(Base):
     __tablename__ = "organizations"
@@ -32,6 +40,8 @@ class Employee(Base):
     hire_date = Column(Date, nullable=False)
     salary = Column(Float, nullable=True)
     organization_id = Column(Integer, ForeignKey("organizations.id"), nullable=False)
+    status = Column(SqlEnum(EmployeeStatus, name="employee_status_enum"), default=EmployeeStatus.ACTIVE)
+
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
     
