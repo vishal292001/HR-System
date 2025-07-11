@@ -4,6 +4,8 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 import os
 from typing import Generator
+from dotenv import load_dotenv
+load_dotenv()  
 
 # Database configuration
 DATABASE_URL = os.getenv(
