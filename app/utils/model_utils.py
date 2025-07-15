@@ -24,17 +24,3 @@ def model_to_dict(model, exclude_fields=None):
     return data
 
 
-
-# # Cache results for 1 hour
-# # TODO: Caching commented for time being
-# # @cache_with_ttl(seconds=3600, maxsize=128)
-# def get_feature_flag_object(feature_name, db):
-#     feature_flag_object = fetch_model_entries_sync(
-#         db=db,
-#         model=FeatureFlag,
-#         filter_data={"name": feature_name,"is_enabled":True},
-#         fetch_one=True
-#     )
-
-#     return feature_flag_object
-

@@ -3,10 +3,13 @@ import threading
 from fastapi import Request
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import JSONResponse
+import os
+from dotenv import load_dotenv
+load_dotenv() 
 
 # Configuration
-RATE_LIMIT = 100  # max requests
-WINDOW_SECONDS = 3600  # per IP, in seconds
+RATE_LIMIT = int(os.getenv("RATE_LIMIT"))  # max requests
+RATE_LIMIT_WINDOW = int(os.getenv("RATE_LIMIT_WINDOW"))  # per IP, in seconds
 
 # In-memory storage for rate-limiting
 request_log = {}
@@ -20,7 +23,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         with lock:
             log = request_log.setdefault(client_ip, [])
             # Remove old timestamps outside the window
-            request_log[client_ip] = [t for t in log if t > current_time - WINDOW_SECONDS]
+            request_log[client_ip] = [t for t in log if t > current_time - RATE_LIMIT_WINDOW]
 
             if len(request_log[client_ip]) >= RATE_LIMIT:
                 return JSONResponse(
