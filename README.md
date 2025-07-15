@@ -43,7 +43,7 @@ hr_system/
 
 ## ⚙️ Environment Configuration
 
-Create a `.env` file:
+environment configuration present in  `.env` file:
 
 ```env
 DATABASE_URL=postgresql+psycopg2://postgres:postgres@db:5432/hr_db
@@ -53,16 +53,28 @@ DATABASE_URL=postgresql+psycopg2://postgres:postgres@db:5432/hr_db
 
 ## 💻 Running Locally (No Docker)
 
+--for Mac/linux
+
 ```bash
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-
 alembic upgrade head
 python app/seed.py
-
-uvicorn app.main:app --reload
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
+
+--for Windows
+
+```bash
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+alembic upgrade head
+python app/seed.py
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
 
 ---
 
@@ -71,7 +83,6 @@ uvicorn app.main:app --reload
 ```bash
 docker compose up --build
 ```
-
 - Runs DB, app, migrations, and seeds data
 - Access API at: http://localhost:8000
 
@@ -101,13 +112,14 @@ GET /api/employees/search
 | position       | string   | Optional                                     |
 | location       | string   | Optional                                     |
 | status         | enum     | ACTIVE, NOT_STARTED, TERMINATED             |
-| page           | int      | Default = 1                                  |
-| page_size      | int      | Default = 10                                 |
+| offset         | int      | Default = 0                                  |
+| limit          | int      | Default = 10                                 |
 
 Example:
 
 ```bash
-curl -X GET "http://localhost:8000/api/employees/search?organization_id=1&page=1&page_size=5"
+curl --location 'http://localhost:8000/api/employees/search?organization_id=1&name=alice' \
+--header 'accept: application/json'
 ```
 
 ---
